@@ -2,6 +2,9 @@
 
 A visually immersive MBTI-style personality quiz that maps your psyche to a sky archetype and generates a shareable animated sticker.
 
+### Personality Quiz
+https://sky-psych.vercel.app/
+
 ## ✨ Features
 
 * 12-question personality flow
