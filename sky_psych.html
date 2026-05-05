@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sky Psyche</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #080614;
+    --border: rgba(255,255,255,0.1);
+    --text: #e8e0ff;
+    --muted: rgba(220,210,255,0.5);
+  }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text);
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      radial-gradient(1px 1px at 8% 12%, rgba(255,255,255,0.9), transparent),
+      radial-gradient(1px 1px at 22% 38%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1.5px 1.5px at 38% 8%, rgba(255,255,255,0.85), transparent),
+      radial-gradient(1px 1px at 53% 28%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 68% 58%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1.5px 1.5px at 79% 18%, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1px 1px at 91% 43%, rgba(255,255,255,0.65), transparent),
+      radial-gradient(1px 1px at 14% 68%, rgba(255,255,255,0.55), transparent),
+      radial-gradient(1.5px 1.5px at 33% 82%, rgba(255,255,255,0.75), transparent),
+      radial-gradient(1px 1px at 58% 73%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 74% 88%, rgba(255,255,255,0.45), transparent),
+      radial-gradient(1px 1px at 4% 52%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 47% 47%, rgba(255,255,255,0.35), transparent),
+      radial-gradient(1px 1px at 87% 6%, rgba(255,255,255,0.85), transparent),
+      radial-gradient(1.5px 1.5px at 2% 90%, rgba(255,255,255,0.65), transparent),
+      radial-gradient(1px 1px at 61% 18%, rgba(255,255,255,0.5), transparent),
+      radial-gradient(1px 1px at 18% 25%, rgba(255,255,255,0.6), transparent),
+      radial-gradient(1px 1px at 44% 62%, rgba(255,255,255,0.45), transparent),
+      radial-gradient(1.5px 1.5px at 96% 74%, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 29% 55%, rgba(255,255,255,0.55), transparent);
+  }
+  .wrap { width: 90%; max-width: 520px; position: relative; z-index: 1; padding: 20px 0; }
+  .card {
+    background: rgba(15, 10, 35, 0.88);
+    border: 1px solid var(--border);
+    border-radius: 28px;
+    padding: 52px 44px;
+    backdrop-filter: blur(20px);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%; transform: translateX(-50%);
+    width: 300px; height: 200px;
+    background: radial-gradient(ellipse, rgba(120,80,220,0.2), transparent 70%);
+    pointer-events: none;
+  }
+  .hidden { display: none !important; }
+  .logo { font-size: 64px; line-height: 1; margin-bottom: 16px; }
+  .logo span { display: inline-block; animation: float 3s ease-in-out infinite; }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: 42px; font-weight: 300; letter-spacing: 2px; color: #e8d5ff; margin-bottom: 10px; }
+  .tagline { font-size: 13px; color: var(--muted); letter-spacing: 0.5px; line-height: 1.6; margin-bottom: 36px; }
+  .btn { display: block; width: 100%; padding: 15px 20px; margin-bottom: 12px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 400; cursor: pointer; transition: all 0.2s ease; letter-spacing: 0.3px; }
+  .btn-primary { background: rgba(130,80,220,0.25); border: 1px solid rgba(160,120,255,0.5); color: #d4b8ff; }
+  .btn-primary:hover { background: rgba(130,80,220,0.45); border-color: rgba(180,140,255,0.8); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); color: var(--text); }
+  .btn:active { transform: scale(0.98) !important; }
+  .btn:disabled { opacity: 0.5; cursor: wait; }
+  .prog-wrap { margin-bottom: 32px; }
+  .prog-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+  .prog-track { height: 2px; background: rgba(255,255,255,0.08); border-radius: 10px; }
+  .prog-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg, #7c3aed, #60a5fa); transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+  .q-text { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 300; font-style: italic; color: #e8d5ff; line-height: 1.4; margin-bottom: 32px; min-height: 72px; display: flex; align-items: center; justify-content: center; }
+
+  /* Result sticker preview */
+  .sticker-preview {
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    margin: 0 auto 24px;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(255,255,255,0.15);
+    transition: box-shadow 0.4s ease;
+  }
+  .sticker-preview img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sticker-overlay {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.25);
+  }
+  .sticker-emoji { font-size: 60px; line-height: 1; filter: drop-shadow(0 2px 12px rgba(0,0,0,0.7)); }
+  .sticker-mbti-label { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 500; color: #fff; letter-spacing: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); margin-top: 6px; }
+
+  .res-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .res-name { font-family: 'Cormorant Garamond', serif; font-size: 36px; font-weight: 300; color: #e8d5ff; margin-bottom: 8px; }
+  .res-badge { display: inline-block; padding: 5px 16px; border-radius: 30px; border: 1px solid rgba(180,140,255,0.3); font-size: 12px; letter-spacing: 3px; color: #c4a8ff; margin-bottom: 20px; }
+  .res-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 28px; }
+  .divider { height: 1px; background: var(--border); margin: 24px 0; }
+  .dl-status { font-size: 12px; color: var(--muted); margin-top: 8px; min-height: 18px; }
+  canvas { display: none; }
+  .fade-in { animation: fadeIn 0.4s ease forwards; }
+  @keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+/* ===== Floating Stars Layer ===== */
+.particle-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.6);
+  opacity: 0;
+  animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(105vh) scale(0.5);
+    opacity: 0;
+  }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.8; }
+  100% {
+    transform: translateY(-10vh) scale(1);
+    opacity: 0;
+  }
+}
+</style>
+</head>
+<body>
+<div class="particle-layer" id="particle-container"></div> 
+<div class="wrap">
+  <div class="card">
+
+    <div id="start">
+      <div class="logo"><span>🌌</span></div>
+      <h1>Sky Psyche</h1>
+      <p class="tagline">12 questions. One sky that reflects your soul.<br>What kind of atmosphere are you?</p>
+      <button class="btn btn-primary" onclick="startQuiz()">Begin ascent</button>
+    </div>
+
+    <div id="quiz" class="hidden">
+      <div class="prog-wrap">
+        <div class="prog-label">
+          <span id="qlabel">Question 1</span>
+          <span id="qfrac">1 / 12</span>
+        </div>
+        <div class="prog-track"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+      </div>
+      <div class="q-text" id="qtext"></div>
+      <div id="opts"></div>
+    </div>
+
+    <div id="result" class="hidden">
+      <div class="sticker-preview" id="stickerPreview">
+        <img id="skyImg" src="" alt="sky" crossorigin="anonymous" />
+        <div class="sticker-overlay">
+          <div class="sticker-emoji" id="resIcon"></div>
+          <div class="sticker-mbti-label" id="resMbtiOverlay"></div>
+        </div>
+      </div>
+      <div class="res-label">Your sky type</div>
+      <div class="res-name" id="resName"></div>
+      <div class="res-badge" id="resMbti"></div>
+      <div class="res-desc" id="resDesc"></div>
+      <div class="divider"></div>
+      <button class="btn btn-primary" id="dlBtn" onclick="doDownload()">⬇ Download sticker</button>
+      <div class="dl-status" id="dlStatus"></div>
+      <button class="btn btn-ghost" onclick="location.reload()">Try again</button>
+    </div>
+
+  </div>
+</div>
+
+<canvas id="c" width="1080" height="1080"></canvas>
+
+<script>
+const questions = [
+  {text:"A glow pulses on the horizon. You…", options:[["Move toward it","E"],["Watch from where you are","I"]]},
+  {text:"Your shadow in morning light looks…", options:[["Crisp and precise","S"],["Soft and formless","N"]]},
+  {text:"The sky you're drawn to is…", options:[["Icy and electric blue","T"],["Warm amber and rose","F"]]},
+  {text:"Your ideal flight path is…", options:[["Charted and steady","J"],["Improvisational and open","P"]]},
+  {text:"A door in the clouds opens briefly. You…", options:[["Step through immediately","E"],["Pause and consider","I"]]},
+  {text:"The wind today feels…", options:[["Recognizable — you know this wind","S"],["Alien — something from elsewhere","N"]]},
+  {text:"A feather drifts past. You think…", options:[["Physics: drag, terminal velocity","T"],["Wonder: whose bird, where is it going?","F"]]},
+  {text:"All clocks in the sky stop. You…", options:[["Calculate how to restart them","J"],["Enjoy the infinite moment","P"]]},
+  {text:"A soft glow appears. You want it to…", options:[["Expand and illuminate everything","E"],["Stay close, intimate, yours alone","I"]]},
+  {text:"A falling star. You feel…", options:[["Awe at the physics — just rocks","S"],["It was a sign made only for you","N"]]},
+  {text:"The sky-creature approaches. It is…", options:[["Dignified, composed, unhurried","T"],["Warm, curious, wants to be touched","F"]]},
+  {text:"The path splits. You choose…", options:[["The one going straight","J"],["The one that spirals upward","P"]]}
+];
+
+// Each type gets a real Unsplash sky/space photo, loaded at runtime in the browser
+const types = {
+  INTJ:{icon:"🌑",name:"Dark Moon",glow:"#9b8ec4",
+    photo:"https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=800&q=80",
+    desc:"Silent and strategic. You see what others miss — patterns in darkness, long arcs of time. A rare and deliberate force."},
+  INTP:{icon:"🌫️",name:"Fog Veil",glow:"#8aaabb",
+    photo:"https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?w=800&q=80",
+    desc:"Drifting through ideas like mist through forest. You diffuse certainties and reveal hidden structures in everything."},
+  INFJ:{icon:"🌌",name:"Deep Cosmos",glow:"#6a60cc",
+    photo:"https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?w=800&q=80",
+    desc:"Ancient and vast. You carry an inner universe — visions of what could be, felt more than spoken."},
+  INFP:{icon:"🌆",name:"Twilight",glow:"#c06c84",
+    photo:"https://images.unsplash.com/photo-1470252649378-9c29740c9fa8?w=800&q=80",
+    desc:"The hour between day and night is yours. You live in liminal beauty — emotionally deep and creatively boundless."},
+  ISTJ:{icon:"🌤️",name:"Clearing Sky",glow:"#7aaad0",
+    photo:"https://images.unsplash.com/photo-1504608524841-42523c442b76?w=800&q=80",
+    desc:"Reliable as dawn. You bring order and clarity after storms — steady, trusted, the one others look up to."},
+  ISFJ:{icon:"🌸",name:"Cherry Blossom Sky",glow:"#e8a0b4",
+    photo:"https://images.unsplash.com/photo-1522748906645-95d8adfd52c7?w=800&q=80",
+    desc:"Gentle and full of warmth. Your care is the soft pink light of spring — fleeting but quietly transforming."},
+  ISTP:{icon:"⚡",name:"Dry Lightning",glow:"#ccaa44",
+    photo:"https://images.unsplash.com/photo-1605727216801-e27ce1d0cc28?w=800&q=80",
+    desc:"Brilliant and unpredictable. You strike with precision from a clear sky — independent, skilled, impossible to pin down."},
+  ISFP:{icon:"🌊",name:"Sea Horizon",glow:"#44aabb",
+    photo:"https://images.unsplash.com/photo-1505118380757-91f5f5632de0?w=800&q=80",
+    desc:"You are where sky meets water — free, present, a quiet beauty that reveals itself slowly to those who wait."},
+  ENTJ:{icon:"💥",name:"Supernova",glow:"#ff6644",
+    photo:"https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=800&q=80",
+    desc:"Explosive and commanding. You burn so bright you reshape everything nearby. A once-in-a-generation force of nature."},
+  ENFJ:{icon:"🌅",name:"Sunrise",glow:"#ff9944",
+    photo:"https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=800&q=80",
+    desc:"Warmth that wakes the world. You are dawn — inspiring others to rise, to grow, to face what the light reveals."},
+  ENTP:{icon:"🌪️",name:"Storm Vortex",glow:"#99aaff",
+    photo:"https://images.unsplash.com/photo-1527482937786-6608f6e14c15?w=800&q=80",
+    desc:"Chaotic and electrifying. You spin ideas into systems, challenge every assumption, pull others into your spiral."},
+  ENFP:{icon:"🌈",name:"Rainbow",glow:"#cc88ff",
+    photo:"https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80",
+    desc:"Vibrant and multi-hued. You appear after storms and make people remember why the sky is worth looking at."},
+  ESTJ:{icon:"☀️",name:"High Noon",glow:"#ffcc44",
+    photo:"https://images.unsplash.com/photo-1560258018-c7db7645254e?w=800&q=80",
+    desc:"Clear, strong, and unambiguous. You are the sun at its peak — decisive, energizing, impossible to ignore."},
+  ESFJ:{icon:"🌻",name:"Golden Hour",glow:"#ffbb44",
+    photo:"https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=800&q=80",
+    desc:"The hour when everything glows warm. You are a gathering — the light that makes strangers feel like family."},
+  ESTP:{icon:"🌩️",name:"Thunderhead",glow:"#8888ff",
+    photo:"https://images.unsplash.com/photo-1594760467013-64ac2b80b7d3?w=800&q=80",
+    desc:"Dramatic and kinetic. You build on the horizon, charge the air, and arrive all at once — thrilling, real, present."},
+  ESFP:{icon:"🎆",name:"Fireworks Sky",glow:"#ff77cc",
+    photo:"https://images.unsplash.com/photo-1467810563316-b5476525c0f9?w=800&q=80",
+    desc:"Pure celebration. You burst into color without apology — spontaneous, joyful, and utterly impossible to ignore."}
+};
+
+let qi = 0, score = {E:0,I:0,S:0,N:0,T:0,F:0,J:0,P:0};
+let currentMbti = '', currentType = null;
+
+function generateParticles() {
+  const container = document.getElementById('particle-container');
+
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+
+    const size = Math.random() * 2 + 0.5 + 'px';
+    p.style.width = size;
+    p.style.height = size;
+
+    p.style.left = Math.random() * 100 + '%';
+
+    const duration = Math.random() * 20 + 15 + 's';
+    p.style.animationDuration = duration;
+
+    p.style.animationDelay = Math.random() * -20 + 's';
+
+    container.appendChild(p);
+  }
+}
+
+function startQuiz() {
+  generateParticles();
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  showQ();
+}
+
+function showQ() {
+  const q = questions[qi];
+  document.getElementById('qtext').innerText = q.text;
+  document.getElementById('qlabel').innerText = 'Question ' + (qi+1);
+  document.getElementById('qfrac').innerText = (qi+1) + ' / 12';
+  document.getElementById('prog').style.width = ((qi/12)*100)+'%';
+  const opts = document.getElementById('opts');
+  opts.innerHTML = '';
+  q.options.forEach(opt => {
+    const b = document.createElement('button');
+    b.className = 'btn btn-ghost';
+    b.innerText = opt[0];
+    b.onclick = () => answer(opt[1]);
+    opts.appendChild(b);
+  });
+}
+
+function answer(val) {
+  score[val]++;
+  qi++;
+  if (qi < questions.length) showQ();
+  else showResult();
+}
+
+function showResult() {
+  document.getElementById('quiz').classList.add('hidden');
+  const res = document.getElementById('result');
+  res.classList.remove('hidden');
+  res.classList.add('fade-in');
+
+  currentMbti =
+    (score.E>=score.I?'E':'I')+
+    (score.S>=score.N?'S':'N')+
+    (score.T>=score.F?'T':'F')+
+    (score.J>=score.P?'J':'P');
+
+  currentType = types[currentMbti] || types['INFJ'];
+  const t = currentType;
+
+  const img = document.getElementById('skyImg');
+  img.crossOrigin = 'anonymous';
+  img.src = t.photo;
+
+  document.getElementById('stickerPreview').style.boxShadow = '0 0 44px ' + t.glow + '77';
+  document.getElementById('resIcon').innerText = t.icon;
+  document.getElementById('resMbtiOverlay').innerText = currentMbti;
+  document.getElementById('resName').innerText = t.name;
+  document.getElementById('resMbti').innerText = currentMbti;
+  document.getElementById('resDesc').innerText = t.desc;
+  document.getElementById('dlStatus').innerText = '';
+}
+
+function renderCanvas(photoImg) {
+  const t = currentType, mbti = currentMbti;
+  const canvas = document.getElementById('c');
+  const ctx = canvas.getContext('2d');
+  const W = 1080, H = 1080, cx = W/2, cy = H/2, r = 490;
+
+  ctx.clearRect(0,0,W,H);
+
+  // Clip circle
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.clip();
+
+  if (photoImg) {
+    // Draw real photo, cover-fit
+    const scale = Math.max(W / photoImg.width, H / photoImg.height);
+    const sw = photoImg.width * scale, sh = photoImg.height * scale;
+    ctx.drawImage(photoImg, (W-sw)/2, (H-sh)/2, sw, sh);
+  } else {
+    // Gradient fallback
+    const bg = ctx.createRadialGradient(cx*0.75, cy*0.65, 0, cx, cy, r*1.1);
+    bg.addColorStop(0, t.glow+'88');
+    bg.addColorStop(0.5, '#1a0533');
+    bg.addColorStop(1, '#030108');
+    ctx.fillStyle = bg;
+    ctx.fillRect(0,0,W,H);
+    // Stars
+    const rng = s => { let x = Math.sin(s)*10000; return x - Math.floor(x); };
+    for (let i = 0; i < 120; i++) {
+      const sx = rng(i*3.1)*W, sy = rng(i*7.3)*H, sr = rng(i*11.7)*1.8+0.3;
+      const dx = sx-cx, dy = sy-cy;
+      if (Math.sqrt(dx*dx+dy*dy) < r-20) {
+        ctx.globalAlpha = rng(i*5.9)*0.7+0.3;
+        ctx.fillStyle='#fff'; ctx.beginPath(); ctx.arc(sx,sy,sr,0,Math.PI*2); ctx.fill();
+      }
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Dark vignette
+  const vignette = ctx.createRadialGradient(cx, cy, r*0.2, cx, cy, r);
+  vignette.addColorStop(0, 'rgba(0,0,0,0.1)');
+  vignette.addColorStop(0.55, 'rgba(0,0,0,0.3)');
+  vignette.addColorStop(1, 'rgba(0,0,0,0.72)');
+  ctx.fillStyle = vignette;
+  ctx.fillRect(0,0,W,H);
+
+  // Color tint from type glow
+  const tint = ctx.createRadialGradient(cx, cy*0.45, 0, cx, cy*0.45, r*0.65);
+  tint.addColorStop(0, t.glow+'44');
+  tint.addColorStop(1, 'transparent');
+  ctx.fillStyle = tint;
+  ctx.fillRect(0,0,W,H);
+
+  ctx.restore();
+
+  // Outer glowing ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI*2);
+  ctx.strokeStyle = t.glow+'cc';
+  ctx.lineWidth = 9;
+  ctx.stroke();
+
+  // Inner subtle ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, r-18, 0, Math.PI*2);
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Emoji icon
+  ctx.save();
+  ctx.shadowColor = t.glow;
+  ctx.shadowBlur = 70;
+  ctx.font = '240px serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(t.icon, cx, cy - 110);
+  ctx.restore();
+
+  // Sky type name
+  ctx.save();
+  ctx.font = '300 50px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = 'rgba(255,255,255,0.82)';
+  ctx.shadowColor = 'rgba(0,0,0,0.9)';
+  ctx.shadowBlur = 14;
+  ctx.fillText(t.name, cx, cy + 72);
+  ctx.restore();
+
+  // MBTI code
+  ctx.save();
+  ctx.shadowColor = t.glow;
+  ctx.shadowBlur = 35;
+  ctx.font = 'bold 130px Arial Black, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText(mbti, cx, cy + 190);
+  ctx.restore();
+
+  // Separator line
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.28)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(cx-150, cy+266); ctx.lineTo(cx+150, cy+266);
+  ctx.stroke();
+  ctx.restore();
+
+  // Branding
+  ctx.save();
+  ctx.font = '26px Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = 'rgba(255,255,255,0.28)';
+  ctx.fillText('Sky Psyche', cx, cy+390);
+  ctx.restore();
+}
+
+async function doDownload() {
+  const t = currentType, mbti = currentMbti;
+  const dlBtn = document.getElementById('dlBtn');
+  const dlStatus = document.getElementById('dlStatus');
+
+  dlBtn.disabled = true;
+  dlBtn.innerText = 'Rendering…';
+  dlStatus.innerText = 'Preparing your sky…';
+
+  const img = new Image();
+  img.crossOrigin = "anonymous"; // important
+
+  img.onload = () => {
+    try {
+      renderCanvas(img);
+
+      const link = document.createElement('a');
+      link.download = 'SkyPsyche-' + mbti + '.png';
+      link.href = document.getElementById('c').toDataURL('image/png');
+      link.click();
+
+      dlStatus.innerText = 'Saved successfully ✓';
+    } catch (e) {
+      fallbackDownload();
+    }
+
+    dlBtn.disabled = false;
+    dlBtn.innerText = '⬇ Download sticker';
+  };
+
+  img.onerror = () => {
+    fallbackDownload();
+  };
+
+  img.src = t.photo + "&crossorigin=anonymous";
+}
+</script>
+</body>
+</html>
